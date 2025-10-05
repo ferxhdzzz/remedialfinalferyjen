@@ -10,7 +10,7 @@ export default function WelcomeScreen() {
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
         <Image 
-          source={require('../assets/finance.png')} 
+          source={require('../../assets/finance.png')} 
           style={styles.logo}
         />
         <Text style={styles.title}>Bienvenido a tus Finanzas</Text>
@@ -22,7 +22,7 @@ export default function WelcomeScreen() {
           style={styles.button} 
           onPress={() => navigation.navigate('Home')}
         >
-          <Text style={styles.buttonText}>Comenzar</Text>
+          <Text style={styles.buttonText}>Comentar</Text>
           <Ionicons name="arrow-forward" size={24} color="white" style={styles.buttonIcon} />
         </TouchableOpacity>
       </View>

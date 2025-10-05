@@ -11,7 +11,7 @@ import {
   Platform 
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { Picker } from '@react-native-picker/picker'; // Necesitas instalar esta librería
+// import { Picker } from '@react-native-picker/picker'; // Ya no se usa
 import DateTimePicker from '@react-native-community/datetimepicker'; // Y esta para el selector de fecha
 import { Ionicons } from '@expo/vector-icons';
 import { transactionCategories } from '../data/categories';
@@ -66,7 +66,10 @@ export default function RegisterScreen({ route }) {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
         <ScrollView contentContainerStyle={styles.container}>
-          <Text style={styles.title}>Registrar Movimiento</Text>
+          {/* HEADER AZUL */}
+          <View style={styles.header}>
+            <Text style={styles.title}>Registrar Movimiento</Text>
+          </View>
 
           {/* Tipo de Movimiento (Gasto / Ingreso) */}
           <View style={styles.typeSelector}>
@@ -105,17 +108,49 @@ export default function RegisterScreen({ route }) {
 
           {/* Selector de Categoría */}
           <Text style={styles.label}>Categoría</Text>
-          <View style={styles.pickerContainer}>
-            <Picker
-              selectedValue={category}
-              onValueChange={(itemValue) => setCategory(itemValue)}
-              style={styles.picker}
-              itemStyle={styles.pickerItem}
-            >
-              {filteredCategories.map(cat => (
-                <Picker.Item key={cat.value} label={cat.label} value={cat.value} />
-              ))}
-            </Picker>
+          <View style={styles.categoryContainer}>
+            {filteredCategories.map(cat => {
+              // Icono basado en la categoría
+              let iconName;
+              switch (cat.value) {
+                case 'Comida': iconName = 'fast-food'; break;
+                case 'Transporte': iconName = 'car'; break;
+                case 'Hogar': iconName = 'home'; break;
+                case 'Entretenimiento': iconName = 'game-controller'; break;
+                case 'Salud': iconName = 'heart'; break;
+                case 'Educacion': iconName = 'school'; break;
+                case 'Ropa': iconName = 'shirt'; break;
+                case 'Salario': iconName = 'briefcase'; break;
+                case 'Bonos': iconName = 'gift'; break;
+                case 'Inversion': iconName = 'trending-up'; break;
+                case 'Regalo': iconName = 'gift'; break;
+                default: iconName = 'ellipse'; break;
+              }
+
+              return (
+                <TouchableOpacity
+                  key={cat.value}
+                  style={[
+                    styles.categoryButton,
+                    category === cat.value && styles.categoryButtonActive
+                  ]}
+                  onPress={() => setCategory(cat.value)}
+                >
+                  <Ionicons 
+                    name={iconName} 
+                    size={16} 
+                    color={category === cat.value ? 'white' : '#1E90FF'} 
+                    style={styles.categoryIcon}
+                  />
+                  <Text style={[
+                    styles.categoryButtonText,
+                    category === cat.value && styles.categoryButtonTextActive
+                  ]}>
+                    {cat.label}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
           </View>
 
           {/* Selector de Fecha */}
@@ -151,14 +186,25 @@ const styles = StyleSheet.create({
   },
   container: {
     flexGrow: 1,
-    padding: 20,
     backgroundColor: '#F5F5F5',
   },
+  header: {
+    backgroundColor: '#1E90FF',
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+  },
   title: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: 'bold',
-    color: '#333333',
-    marginBottom: 30,
+    color: 'white',
     textAlign: 'center',
   },
   label: {
@@ -166,7 +212,8 @@ const styles = StyleSheet.create({
     color: '#333333',
     marginBottom: 8,
     fontWeight: '600',
-    marginTop: 15,
+    marginTop: 20,
+    marginLeft: 20,
   },
   input: {
     backgroundColor: '#FFFFFF',
@@ -176,31 +223,50 @@ const styles = StyleSheet.create({
     color: '#333333',
     borderWidth: 1,
     borderColor: '#E0E0E0',
+    marginHorizontal: 20,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 1,
     elevation: 1,
   },
-  pickerContainer: {
+  categoryContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginHorizontal: 20,
+    gap: 10,
+  },
+  categoryButton: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 20,
     borderWidth: 1,
     borderColor: '#E0E0E0',
-    overflow: 'hidden', // Para asegurar que el borde se vea bien
+    marginBottom: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 1,
     elevation: 1,
   },
-  picker: {
-    height: 50, // Ajusta la altura del Picker
-    width: '100%',
+  categoryButtonActive: {
+    backgroundColor: '#1E90FF',
+    borderColor: '#1E90FF',
   },
-  pickerItem: {
-    fontSize: 16,
+  categoryButtonText: {
+    fontSize: 14,
     color: '#333333',
+    fontWeight: '500',
+  },
+  categoryButtonTextActive: {
+    color: 'white',
+    fontWeight: '600',
+  },
+  categoryIcon: {
+    marginRight: 6,
   },
   datePickerButton: {
     backgroundColor: '#FFFFFF',
@@ -211,6 +277,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     borderColor: '#E0E0E0',
+    marginHorizontal: 20,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
@@ -222,11 +289,13 @@ const styles = StyleSheet.create({
     color: '#333333',
   },
   registerButton: {
-    backgroundColor: '#1E90FF', // Azul Primario
+    backgroundColor: '#1E90FF',
     padding: 16,
     borderRadius: 30,
     alignItems: 'center',
     marginTop: 40,
+    marginHorizontal: 20,
+    marginBottom: 20,
     shadowColor: "#1E90FF",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
@@ -243,7 +312,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#E0E0E0',
     borderRadius: 25,
     marginBottom: 20,
-    marginTop: 10,
+    marginTop: 20,
+    marginHorizontal: 20,
     overflow: 'hidden',
   },
   typeButton: {

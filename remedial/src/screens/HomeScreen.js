@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, SafeAreaView } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, SafeAreaView, Dimensions } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import TransactionItem from '../components/TransactionItem';
-import { PieChart } from 'react-native-chart-kit'; // Para la gráfica
-import AsyncStorage from '@react-native-async-storage/async-storage'; // Para persistir datos
+import { PieChart } from 'react-native-chart-kit';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Instalar AsyncStorage
-// npm install @react-native-async-storage/async-storage
+const screenWidth = Dimensions.get('window').width;
 
 // --- DATOS DE EJEMPLO INICIALES ---
 const initialTransactions = [
@@ -33,11 +32,11 @@ export default function HomeScreen() {
           if (storedTransactions !== null) {
             setTransactions(JSON.parse(storedTransactions));
           } else {
-            setTransactions(initialTransactions); // Cargar iniciales si no hay nada guardado
+            setTransactions(initialTransactions);
           }
         } catch (error) {
           console.error("Error loading transactions:", error);
-          setTransactions(initialTransactions); // Fallback
+          setTransactions(initialTransactions);
         }
       };
       loadTransactions();
@@ -55,7 +54,6 @@ export default function HomeScreen() {
     };
     saveTransactions();
   }, [transactions]);
-
 
   const addTransaction = (newTransaction) => {
     setTransactions(prevTransactions => [...prevTransactions, newTransaction]);
@@ -83,12 +81,12 @@ export default function HomeScreen() {
       colorIndex++;
       return {
         name: categoria,
-        population: gastosPorCategoria[categoria], // `population` es el valor para la gráfica
+        population: gastosPorCategoria[categoria],
         color: color,
         legendFontColor: '#7F7F7F',
         legendFontSize: 12,
       };
-    }).sort((a,b) => b.population - a.population); // Ordenar de mayor a menor gasto
+    }).sort((a,b) => b.population - a.population);
 
     return data;
   };
@@ -99,7 +97,7 @@ export default function HomeScreen() {
   const chartConfig = {
     backgroundGradientFrom: '#F5F5F5',
     backgroundGradientTo: '#F5F5F5',
-    color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // Color del texto de la leyenda
+    color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
   };
 
   return (
@@ -131,13 +129,13 @@ export default function HomeScreen() {
             <Text style={styles.sectionTitle}>Gastos por Categoría</Text>
             <PieChart
               data={chartData}
-              width={styles.chartContainer.width}
+              width={screenWidth - 30}
               height={200}
               chartConfig={chartConfig}
-              accessor="population" // Propiedad que contiene el valor para la gráfica
+              accessor="population"
               backgroundColor="transparent"
-              paddingLeft="15" // Ajusta el padding para la leyenda
-              absolute // Muestra los valores absolutos
+              paddingLeft="15"
+              absolute
             />
           </View>
         )}
@@ -147,12 +145,11 @@ export default function HomeScreen() {
             <Text style={styles.noDataText}>No hay gastos registrados para mostrar en la gráfica.</Text>
           </View>
         )}
-        
 
         {/* LISTA DE TRANSACCIONES */}
         <View style={styles.transactionsSection}>
           <Text style={styles.sectionTitle}>Movimientos Recientes</Text>
-          {transactions.sort((a,b) => new Date(b.fecha) - new Date(a.fecha)).map(t => ( // Ordenar por fecha descendente
+          {transactions.sort((a,b) => new Date(b.fecha) - new Date(a.fecha)).map(t => (
             <TransactionItem key={t.id} {...t} />
           ))}
           {transactions.length === 0 && (
@@ -164,7 +161,7 @@ export default function HomeScreen() {
       {/* BOTÓN FLOTANTE para añadir transacción */}
       <TouchableOpacity 
         style={styles.fab}
-        onPress={() => navigation.navigate('Register', { addTransaction })} // Pasar la función
+        onPress={() => navigation.navigate('Registro', { addTransaction })}
       >
         <Ionicons name="add-circle" size={50} color="#1E90FF" />
       </TouchableOpacity>
@@ -175,16 +172,16 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#F5F5F5', // Fondo principal
+    backgroundColor: '#F5F5F5',
   },
   scrollContent: {
-    paddingBottom: 100, // Espacio para que el FAB no cubra contenido
+    paddingBottom: 100,
   },
   
   // Estilos del Encabezado (Balance Total)
   header: {
     padding: 20,
-    backgroundColor: '#1E90FF', // Azul Primario
+    backgroundColor: '#1E90FF',
     marginBottom: 10,
     alignItems: 'center',
     borderBottomLeftRadius: 20,
@@ -224,13 +221,13 @@ const styles = StyleSheet.create({
   summaryValueIngreso: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#D4EDDA', // Un verde más claro para armonizar con el azul
+    color: '#D4EDDA',
     marginTop: 3,
   },
   summaryValueGasto: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#F8D7DA', // Un rojo más claro
+    color: '#F8D7DA',
     marginTop: 3,
   },
 
@@ -264,17 +261,14 @@ const styles = StyleSheet.create({
     shadowRadius: 1,
     elevation: 1,
   },
-  chartContainer: {
-    width: '100%', // El ancho del PieChart necesita ser numérico, no string
-  },
 
   // Estilos de la Sección de Transacciones
   transactionsSection: {
     marginTop: 10,
-    paddingHorizontal: 15, // Padding para los items de la lista
+    paddingHorizontal: 15,
   },
 
-  // Estilos del Botón de Acción Flotante (FAB - Floating Action Button)
+  // Estilos del Botón de Acción Flotante (FAB)
   fab: {
     position: 'absolute',
     bottom: 30,
