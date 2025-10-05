@@ -1,0 +1,15 @@
+export const transactionCategories = [
+    { label: 'Comida', value: 'Comida', type: 'Gasto' },
+    { label: 'Transporte', value: 'Transporte', type: 'Gasto' },
+    { label: 'Hogar', value: 'Hogar', type: 'Gasto' },
+    { label: 'Entretenimiento', value: 'Entretenimiento', type: 'Gasto' },
+    { label: 'Salud', value: 'Salud', type: 'Gasto' },
+    { label: 'Educación', value: 'Educacion', type: 'Gasto' },
+    { label: 'Ropa', value: 'Ropa', type: 'Gasto' },
+    { label: 'Otros Gastos', value: 'Otros Gastos', type: 'Gasto' },
+    { label: 'Salario', value: 'Salario', type: 'Ingreso' },
+    { label: 'Bonos', value: 'Bonos', type: 'Ingreso' },
+    { label: 'Inversión', value: 'Inversion', type: 'Ingreso' },
+    { label: 'Regalo', value: 'Regalo', type: 'Ingreso' },
+    { label: 'Otros Ingresos', value: 'Otros Ingresos', type: 'Ingreso' },
+];
